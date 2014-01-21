@@ -4,12 +4,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <org.opencv.android.JavaCameraView
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:visibility="gone"
-        android:id="@+id/HelloOpenCvView"
-        opencv:show_fps="true"
-        opencv:camera_id="any" />
-
+    <FrameLayout
+             android:layout_width="fill_parent"
+             android:layout_height="fill_parent">
+             
+	    <org.opencv.android.JavaCameraView
+	        android:layout_width="fill_parent"
+	        android:layout_height="fill_parent"
+	        android:visibility="gone"
+	        android:id="@+id/HelloOpenCvView"
+	        opencv:show_fps="true"
+	        opencv:camera_id="any" />
+	
+	   
+		<com.example.ocr.ViewfinderView
+			android:id="@+id/viewfinder_view"
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+			android:background="#0000"/>
+    
+    </FrameLayout>
 </LinearLayout>

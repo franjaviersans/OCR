@@ -1,5 +1,8 @@
 <resources>
 
     <color name="black_overlay">#66000000</color>
+    <color name="viewfinder_mask">#60000000</color>
+    <color name="viewfinder_frame">#ffd6d6d6</color>
+    <color name="viewfinder_corners">#ffffffff</color>
 
 </resources>

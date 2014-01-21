@@ -46,6 +46,9 @@ containing a value of this type.
     }
     public static final class color {
         public static final int black_overlay=0x7f050000;
+        public static final int viewfinder_corners=0x7f050003;
+        public static final int viewfinder_frame=0x7f050002;
+        public static final int viewfinder_mask=0x7f050001;
     }
     public static final class drawable {
         public static final int ic_launcher=0x7f020000;
@@ -55,6 +58,7 @@ containing a value of this type.
         public static final int any=0x7f040000;
         public static final int back=0x7f040001;
         public static final int front=0x7f040002;
+        public static final int viewfinder_view=0x7f040004;
     }
     public static final class layout {
         public static final int camera_activity=0x7f030000;
