@@ -28,6 +28,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Paint.Style;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
 
@@ -38,6 +39,7 @@ import android.view.View;
  * The code for this class was adapted from the ZXing project: http://code.google.com/p/zxing
  */
 public final class ViewfinderView extends View {
+	private String TAG = "OCR ACTIVITY: Camera Preview:";
   //private static final long ANIMATION_DELAY = 80L;
 
   /** Flag to draw boxes representing the results from TessBaseAPI::GetRegions(). */
@@ -70,6 +72,8 @@ public final class ViewfinderView extends View {
   private final int cornerColor;
   private Rect frame;
   private Point center;
+  private Point preResolution;
+  private MatrixSizes mMatrix;
 
   // This constructor is used when the class is built from an XML resource.
   public ViewfinderView(Context context, AttributeSet attrs) {
@@ -82,19 +86,32 @@ public final class ViewfinderView extends View {
     frameColor = resources.getColor(R.color.viewfinder_frame);
     cornerColor = resources.getColor(R.color.viewfinder_corners);
 
+    center = new Point();
+    preResolution = new Point();
     frame = new Rect(0,0,650,350);
+    mMatrix = new MatrixSizes();
   }
 
   //@SuppressWarnings("unused")
   //@Override
   public void onDraw(Canvas canvas) {
-   
 	  
 	if (frame == null) {
 	  return;
 	}
-	int width = 680 / 2;
-	int height = 360 / 2; 
+	
+	
+	int realwidth = mMatrix.MatWidth;
+	int realheight = mMatrix.MatHeigth ;
+	int width = realwidth / 2;
+	int height = realheight / 2; 
+	int cellsizex = mMatrix.CellWidth;
+	int cellsizey = mMatrix.CellHeigth;
+	
+	Log.i(TAG, "Preview size " + preResolution.x + "x" + preResolution.y);
+	Log.i(TAG, "Tamano recuadro " + realwidth  + "x" + realheight);
+	//int width = 680 / 2;
+	
 	
 	frame.left 	= center.x - width;
 	frame.right	= center.x + width;
@@ -117,32 +134,24 @@ public final class ViewfinderView extends View {
 	canvas.drawRect(frame.right - 1, frame.top, frame.right + 1, frame.bottom - 1, paint);
 	canvas.drawRect(frame.left, frame.bottom - 1, frame.right + 1, frame.bottom + 1, paint);
 	
-	
-	
-	int ioffsetx = 68;
-	int ioffsety = 60;
-	
-	
+	//Draw all cells
 	for(int i=0;i<10;++i)
 		for(int j=0;j<6;++j)
 		{
 			//+68, +60
-			
 			//Arriba
-			canvas.drawRect(frame.left + (ioffsetx * i), frame.top + (ioffsety * j), 
-							frame.left + (ioffsetx * (i+1)), frame.top +  (ioffsety * j) + 2, paint);
-			
+			canvas.drawRect(frame.left + (cellsizex * i), frame.top + (cellsizey * j), 
+							frame.left + (cellsizex * (i+1)), frame.top +  (cellsizey * j) + 2, paint);
 			//Izqueirda
-			canvas.drawRect(frame.left + (ioffsetx * i), frame.top + (ioffsety * j), 
-							frame.left + (ioffsetx * i) + 2, frame.top + (ioffsety * (j+1)), paint);
-			
+			canvas.drawRect(frame.left + (cellsizex * i), frame.top + (cellsizey * j), 
+							frame.left + (cellsizex * i) + 2, frame.top + (cellsizey * (j+1)), paint);
 			//Derecha
-			canvas.drawRect(frame.left + (ioffsetx * (i+1)), frame.top + (ioffsety * j), 
-							frame.left + (ioffsetx * (i+1)) + 2, frame.top + (ioffsety * (j+1)) , paint);
-			
+			canvas.drawRect(frame.left + (cellsizex * (i+1)), frame.top + (cellsizey * j), 
+							frame.left + (cellsizex * (i+1)) + 2, frame.top + (cellsizey * (j+1)) , paint);
 			//Abajo
-			canvas.drawRect(frame.left + (ioffsetx * i), frame.top + (ioffsety * (j+1)), 
-							frame.left + (ioffsetx * (i+1)), frame.top + (ioffsety * (j+1)) + 2, paint);
+			canvas.drawRect(frame.left + (cellsizex * i), frame.top + (cellsizey * (j+1)), 
+							frame.left + (cellsizex * (i+1)), frame.top + (cellsizey * (j+1)) + 2, paint);
+			
 		}
 	
 	// Draw the framing rect corner UI elements
@@ -162,12 +171,12 @@ public final class ViewfinderView extends View {
 
   }
   
-
-  public void SetSize(Point size){
-	  center = new Point(size.x/2, size.y/2);
-  }
-  
   public void drawViewfinder() {
     invalidate();
+  }
+  
+  public void setMatrix(MatrixSizes mMat) {
+	    mMatrix = mMat;
+	    center.set(mMatrix.WinWidth / 2, mMatrix.WinHeigth / 2);
   }
 }
