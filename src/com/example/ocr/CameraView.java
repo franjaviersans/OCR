@@ -1,35 +1,24 @@
 package com.example.ocr;
-
-import java.io.FileOutputStream;
-import java.util.List;
-
 import org.opencv.android.JavaCameraView;
-import org.opencv.android.Utils;
-import org.opencv.core.Mat;
-import org.opencv.core.Range;
-import org.opencv.core.Rect;
-import org.opencv.imgproc.Imgproc;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.Size;
-import android.os.Environment;
+
 import android.util.AttributeSet;
 import android.util.Log;
 
 public class CameraView extends JavaCameraView implements PictureCallback {
 
 	private static final String TAG = "OCR ACTIVITY: Taking Photo:";
-    private String mPictureFileName = Environment.getExternalStorageDirectory().getPath() + "/carpeta/muestra.jpg";
-    private MatrixSizes mMatrix;
+    //private String mPictureFileName = Environment.getExternalStorageDirectory().getPath() + "/carpeta/muestra.jpg";
+    //private MatrixSizes mMatrix;
 	
     public CameraView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		
-		mMatrix = new MatrixSizes();
+		//mMatrix = new MatrixSizes();
 	}
     /*
     public List<String> getEffectList() {
@@ -82,7 +71,7 @@ public class CameraView extends JavaCameraView implements PictureCallback {
     @Override
     public void onPictureTaken(byte[] data, Camera camera) {
         Log.i(TAG, "Saving a bitmap to file");
-        // The camera preview was automatically stopped. Start it again.
+        /*// The camera preview was automatically stopped. Start it again.
         mCamera.startPreview();
         mCamera.setPreviewCallback(this);
 
@@ -125,11 +114,11 @@ public class CameraView extends JavaCameraView implements PictureCallback {
 
         } catch (java.io.IOException e) {
             Log.e(TAG, "Exception in photoCallback", e);
-        }
+        }*/
 
     }
     
     public void setMarix(MatrixSizes mMat){
-    	mMatrix = mMat;
+    	//mMatrix = mMat;
     }
 }
