@@ -1,4 +1,5 @@
 package com.example.ocr;
+
 import org.opencv.android.JavaCameraView;
 
 import android.content.Context;

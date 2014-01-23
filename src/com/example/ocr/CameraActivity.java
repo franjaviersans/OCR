@@ -1,6 +1,7 @@
 package com.example.ocr;
 
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 
@@ -91,9 +92,9 @@ public class CameraActivity extends Activity implements CvCameraViewListener2, O
 	     frame = new Rect();
 	     
 	     //Init Teressat
-	     //baseApi = new TessBaseAPI();
-	     //baseApi.init(Environment.getExternalStorageDirectory().getPath()+File.separator, "eng");
-	     //baseApi.setVariable(TessBaseAPI.VAR_CHAR_WHITELIST,"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
+	     baseApi = new TessBaseAPI();
+	     baseApi.init(Environment.getExternalStorageDirectory().getPath()+File.separator, "eng");
+	     baseApi.setVariable(TessBaseAPI.VAR_CHAR_WHITELIST,"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
 	 }
 	
 	 @Override
