@@ -100,18 +100,21 @@ public class CameraView extends JavaCameraView implements PictureCallback {
         
         
         
-        int newWidth 	=	mMatrix.MatWidth * sizeOptions.outWidth / mMatrix.ResWidth;
-        int newHeight 	= 	mMatrix.MatHeigth * sizeOptions.outHeight / mMatrix.ResHeigth;
+        int newWidth	= (int) ((double) sizeOptions.outWidth * 0.95);
+	    int newHeight 	= (int) ((double) sizeOptions.outWidth * 0.95 / 1.9);
+        //int newWidth 	=	mMatrix.MatWidth * sizeOptions.outWidth / mMatrix.ResWidth;
+        //int newHeight 	= 	mMatrix.MatHeigth * sizeOptions.outHeight / mMatrix.ResHeigth;
         int centerx 	= 	sizeOptions.outWidth / 2;
         int centery 	=  	sizeOptions.outHeight / 2;
         
         Log.i(TAG, "Bitmap is " + (centerx - newWidth / 2) + "x" + (centery - newHeight/2)+ " " +newWidth + "x" + newHeight);
         //Rect roi = new Rect(, centery - newHeight/2, newWidth, newHeight);
-        Mat cropped = new Mat(Image, new Range(centerx - newWidth / 2, newWidth), new Range(centery - newHeight/2, newHeight));
+        Mat cropped = new Mat(Image,	new Range(centery - newHeight/2, centery + newHeight/2), 
+        								new Range(centerx - newWidth / 2, centerx + newWidth / 2));
 
-        bit = Bitmap.createBitmap(cropped.width(), cropped.height(),Bitmap.Config.ARGB_8888);
+       // bit = Bitmap.createBitmap(cropped.width(), cropped.height(),Bitmap.Config.ARGB_8888);
         Log.i(TAG, "Bitmap is " + cropped.width()+ "x" + cropped.height());
-        Utils.matToBitmap(cropped, bit);
+       // Utils.matToBitmap(cropped, bit);
         
         // Write the image in a file (in jpeg format)
         try {

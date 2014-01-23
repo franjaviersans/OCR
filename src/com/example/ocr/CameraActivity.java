@@ -1,29 +1,33 @@
 package com.example.ocr;
 
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.io.FileOutputStream;
+import java.util.ArrayList;
+
 
 import org.opencv.android.BaseLoaderCallback;
-import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.CameraBridgeViewBase.CvCameraViewFrame;
-import org.opencv.android.CameraBridgeViewBase.CvCameraViewListener;
 import org.opencv.android.CameraBridgeViewBase.CvCameraViewListener2;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
+import org.opencv.android.Utils;
 import org.opencv.core.Mat;
+import org.opencv.core.Range;
+
+import com.googlecode.leptonica.android.ReadFile;
+import com.googlecode.tesseract.android.TessBaseAPI;
 
 import com.example.ocr.R;
 import com.example.ocr.ViewfinderView;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
+import android.graphics.Bitmap;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.hardware.Camera.Size;
-import android.os.Build;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
@@ -31,7 +35,6 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.WindowManager;
-import android.widget.Toast;
 
 
 
@@ -40,6 +43,9 @@ public class CameraActivity extends Activity implements CvCameraViewListener2, O
 	private CameraView mOpenCvCameraView;
 	private ViewfinderView viewfinderView;
 	private MatrixSizes mMatrix;
+	private Mat lastPreview;
+	private Rect frame;
+	private TessBaseAPI baseApi;
 	
 	
 	private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
@@ -81,6 +87,7 @@ public class CameraActivity extends Activity implements CvCameraViewListener2, O
 	     
 	     mMatrix.WinWidth  = size.x;
 	     mMatrix.WinHeigth = size.y;
+	     frame = new Rect();
 	 }
 	
 	 @Override
@@ -128,7 +135,8 @@ public class CameraActivity extends Activity implements CvCameraViewListener2, O
 	 }
 	
 	 public Mat onCameraFrame(CvCameraViewFrame inputFrame) {
-	     return inputFrame.rgba();
+		lastPreview = inputFrame.rgba();
+		return inputFrame.rgba();
 	 }
 	
 	@Override
@@ -145,9 +153,28 @@ public class CameraActivity extends Activity implements CvCameraViewListener2, O
 	    //String currentDateandTime = sdf.format(new Date());
 	    //String fileName = Environment.getExternalStorageDirectory().getPath() +
 	    //                       "/sample_picture_" + currentDateandTime + ".jpg";
-	    mOpenCvCameraView.takePicture();
-	    Toast.makeText(this, "Photo saved", Toast.LENGTH_SHORT).show();
-	        
+	    //mOpenCvCameraView.takePicture();
+	    //Toast.makeText(this, "Photo saved", Toast.LENGTH_SHORT).show();
+	    
+			
+		Log.i(TAG, "Bitmap is " + lastPreview.width()+ "x" + lastPreview.height());
+		
+		int width = mMatrix.MatWidth / 2;
+		int height = mMatrix.MatHeigth / 2;
+		
+		
+		
+		frame.left 	= mMatrix.ResWidth/2 - width;
+		frame.right	= mMatrix.ResWidth/2 + width;
+		frame.top 	= mMatrix.ResHeigth/2 - height;
+		frame.bottom = mMatrix.ResHeigth/2 + height;
+		
+		
+		OCRTask OCRT = new OCRTask();
+		OCRT.execute(lastPreview);
+		
+			
+			
 		return false;
 	}
 	
@@ -156,5 +183,67 @@ public class CameraActivity extends Activity implements CvCameraViewListener2, O
 		// TODO Auto-generated method stub
 		return inputFrame;
 	}*/
+	
+	
 
+	private class OCRTask extends AsyncTask<Mat, Void, boolean[]>{
+	    //private final String CLASS_NAME = OCRTask.class.getSimpleName();
+	    
+		@Override
+		protected boolean[] doInBackground(Mat... ImageMat) {
+			ArrayList<String> FinalCells = new ArrayList<String>();
+			Bitmap bit;
+	    	//String mPictureFileName;
+	    	Mat cropped;
+	    	//FileOutputStream fos;
+	    	
+	    	for(int i=0;i<6;++i)
+				for(int j=0;j<10;++j)
+				{
+					
+					//mPictureFileName = Environment.getExternalStorageDirectory().getPath() + "/carpeta/muestra"+i+j+".jpg";
+					
+					cropped = new Mat(ImageMat[0],	
+										new Range(frame.top + (mMatrix.CellHeigth * i), frame.top + (mMatrix.CellHeigth * (i+1))),
+										new Range(frame.left + (mMatrix.CellWidth * j),frame.left + (mMatrix.CellWidth * (j+1))));
+					//new Range(frame.top, frame.bottom), 
+					//new Range(frame.left, frame.right));
+			
+					
+					
+					
+					
+					
+					
+					//DO THE OCR
+					bit = Bitmap.createBitmap(cropped.width(), cropped.height(),Bitmap.Config.ARGB_8888);
+					Utils.matToBitmap(cropped, bit);
+					
+					baseApi.setImage(ReadFile.readBitmap(bit));
+				    String textResult = baseApi.getUTF8Text();
+					//END OCR
+				    
+				    FinalCells.add(textResult);
+				    
+				    
+				    /*
+					try {
+					    fos = new FileOutputStream(mPictureFileName);
+					
+					    bit.compress(Bitmap.CompressFormat.JPEG, 95, fos);
+					    fos.close();
+					
+					} catch (java.io.IOException e) {
+					    Log.e(TAG, "Exception in photoCallback", e);
+					}*/
+				}
+	    	
+	    	
+	    	
+	    	
+	    	boolean v[] = new boolean[1];
+	    	return v;
+		}
+	}
 }
+

@@ -17,16 +17,20 @@
 package com.example.ocr;
 
 
+import java.io.FileOutputStream;
+
 import com.example.ocr.R;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
 
 import android.graphics.Rect;
 import android.graphics.Paint.Style;
+import android.os.Environment;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Display;
